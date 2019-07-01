@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cdkj.dzt.dao.IProductDAO">
+	<resultMap id="product_DB_Result" type="product">
+		<result column="code" property="code" />
+		<result column="order_code" property="orderCode" />
+		<result column="model_code" property="modelCode" />
+		<result column="model_name" property="modelName" />
+		<result column="model_pic" property="modelPic" />
+		<result column="price" property="price" />
+		<result column="quantity" property="quantity" />
+	</resultMap>
+	<sql id="where_condition">
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			<if test="code != null and code != '' ">
+				AND t.code = #{code}
+			</if>
+			<if test="modelCode != null and modelCode != '' ">
+				AND t.model_code = #{modelCode}
+			</if>
+			<if test="orderCode != null and orderCode != '' ">
+				AND t.order_code = #{orderCode}
+			</if>
+		</trim>
+	</sql>
+	<select id="select_product" parameterType="product" resultMap="product_DB_Result">
+		SELECT
+		t.code
+		,t.order_code
+		,t.model_code
+		,t.model_name
+		,t.model_pic
+		,t.price
+		,t.quantity
+		FROM
+		tdzt_product t
+		<include refid="where_condition" />
+		<trim prefix="ORDER BY ">
+			<if test="order != null and order != '' ">
+				t.${order}
+			</if>
+		</trim>
+	</select>
+
+	<select id="select_product_count" parameterType="product"
+		resultType="java.lang.Long">
+		SELECT count(1) FROM tdzt_product t
+		<include refid="where_condition" />
+	</select>
+
+	<insert id="insert_product" parameterType="product">
+		INSERT INTO
+		tdzt_product(
+		code
+		,order_code
+		,model_code
+		,model_name
+		,model_pic
+		,price
+		,quantity
+		)
+		VALUES(
+		#{code}
+		,#{orderCode}
+		,#{modelCode}
+		,#{modelName}
+		,#{modelPic}
+		,#{price}
+		,#{quantity}
+		)
+	</insert>
+
+	<update id="update_product" parameterType="product">
+		UPDATE tdzt_product
+		SET
+		order_code = #{orderCode}
+		,model_code = #{modelCode}
+		,model_name = #{modelName}
+		,model_pic = #{modelPic}
+		,price = #{price}
+		,quantity = #{quantity}
+		WHERE code = #{code}
+	</update>
+
+
+</mapper>
